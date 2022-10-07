@@ -14,7 +14,6 @@ import (
 	"log"
 	"os"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -114,26 +113,16 @@ func stringToInt(line string) Tuple {
 }
 
 // SortList takes a list of tuples as an argument to sort through it based on the second argument column.
-// the column values and the tuples are bound with a map, with respect to the condition of non-unique keys */
+// these two values are passed in to create a heap and start the sorting process according the heap sort algorithm,
+// then the final sorted list of tuples is returned.
 func SortList(list []Tuple, column int) []Tuple {
-	var mapping map[int]Tuple = make(map[int]Tuple)
-	for _, segment := range list {
-		if _, ok := mapping[segment[column]]; ok {
-			mapping[segment[column]+1] = segment
-		} else {
-			mapping[segment[column]] = segment
-		}
-	}
-	var keys []int = make([]int, 0, len(mapping))
-	for key := range mapping {
-		keys = append(keys, key)
-	}
-	sort.Ints(keys)
-	var final []Tuple
-	for _, key := range keys {
-		final = append(final, mapping[key])
-	}
-	return final
+	var heap *MaxHeap = NewHeap(list, column)
+	heap.heapSort()
+	var sortedList []Tuple
+	var err error
+	sortedList, err = heap.getSortedList()
+	handleErrors(err, nil, false)
+	return sortedList
 }
 
 // intToString is a helper function which casts the integer values of a tuple passed as an argument
