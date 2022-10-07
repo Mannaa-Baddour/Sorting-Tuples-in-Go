@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"packages/sorting"
+
+	"github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/sorting"
 )
 
 /* First test is run normally to show that the sorting is working
