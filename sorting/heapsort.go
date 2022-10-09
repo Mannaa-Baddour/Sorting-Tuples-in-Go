@@ -58,6 +58,9 @@ func (heap *MaxHeap) heapSort() {
 	heap.sorted = true
 }
 
+// getSortedList is an a get method associated with MaxHeap, returns the final result of a sorted list of tuples
+// if it has been sorted, otherwise it returns an error, and that to make sure that correct results are returned
+// to prevent the output from being messed up.
 func (heap *MaxHeap) getSortedList() ([]Tuple, error) {
 	if heap.sorted {
 		return heap.list, nil
