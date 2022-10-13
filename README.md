@@ -8,11 +8,21 @@ To run sort cmd directly from code
 go run cmd/sort/sort.go
 ```
 
-To build and run
+To build and run sort
 
 ```bash
 make build-sort
 ./bin/sort
+```
+
+To run server using makefile
+```bash
+make run-server
+```
+
+To build server using makefile
+```bash
+make build-server
 ```
 
 To build all

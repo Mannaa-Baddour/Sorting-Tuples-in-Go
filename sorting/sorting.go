@@ -44,7 +44,7 @@ func ReadingTuplesFromFile(fileName string) []Tuple {
 	var file *os.File
 	var err error
 	file, err = os.Open(fileName)
-	handleErrors(err, file, true)
+	HandleErrors(err, file, true)
 	defer file.Close()
 	var scanner *bufio.Scanner = bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -54,17 +54,17 @@ func ReadingTuplesFromFile(fileName string) []Tuple {
 			listOfTuples = append(listOfTuples, tuple)
 		} else {
 			err = errors.New("warning: cannot append tuple, length of tuple is not correct")
-			handleErrors(err, nil, false)
+			HandleErrors(err, nil, false)
 		}
 	}
 	return listOfTuples
 }
 
-// handleErrors logs the error passed as an argument to it, checks whether or not the execution of some commands is ok.
+// HandleErrors logs the error passed as an argument to it, checks whether or not the execution of some commands is ok.
 // Logging will be output to a file log.txt.
 // The second argument fileToCheck, specifies whether there is a file that needs to be closed due to an error or not.
 // The last argument fatal, specifies whether the execution needs to be terminated or not.
-func handleErrors(err error, fileToCheck *os.File, fatal bool) {
+func HandleErrors(err error, fileToCheck *os.File, fatal bool) {
 	var logFile *os.File
 	var logFileErr error
 	var logFileOptions int = os.O_APPEND | os.O_CREATE | os.O_WRONLY
@@ -95,16 +95,16 @@ func stringToInt(line string) Tuple {
 	var err error
 	var tuple Tuple
 	match, err = regexp.MatchString(`^\d,\s?\d,\s?\d$`, line)
-	handleErrors(err, nil, true)
+	HandleErrors(err, nil, true)
 	if match {
 		var stringParts []string = strings.Split(line, ",")
 		for _, value := range stringParts {
 			value = strings.TrimSpace(value)
 			var intValue int
 			intValue, err = strconv.Atoi(value)
-			handleErrors(err, nil, true)
+			HandleErrors(err, nil, true)
 			err = tuple.appendOne(intValue)
-			handleErrors(err, nil, false)
+			HandleErrors(err, nil, false)
 		}
 	} else {
 		fmt.Printf("Current line \"%s\" doesn't match the correct format (int, int, int)\n", line)
@@ -121,7 +121,7 @@ func SortList(list []Tuple, column int) []Tuple {
 	var sortedList []Tuple
 	var err error
 	sortedList, err = heap.getSortedList()
-	handleErrors(err, nil, false)
+	HandleErrors(err, nil, false)
 	return sortedList
 }
 
@@ -146,7 +146,7 @@ func SaveResultToFile(fileName string, result []Tuple) {
 	var file *os.File
 	var err error
 	file, err = os.Create(fileName)
-	handleErrors(err, file, true)
+	HandleErrors(err, file, true)
 	defer file.Close()
 	for _, tuple := range result {
 		var line string = intToString(tuple)
