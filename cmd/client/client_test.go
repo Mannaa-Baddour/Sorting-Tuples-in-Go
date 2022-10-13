@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	// srv "github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/internal/server"
 	"github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/sorting"
 )
 
@@ -19,6 +20,7 @@ func TestSendRequestToSort(t *testing.T) {
 		"operation-status": "Operation Done Successfully",
 	}
 	server := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
+		// srv.HandleRequestToSort(...)
 		// Here I was trying to use handleRequestToSort function that exist in server.go
 		// instead, I had to mimic its functionality.
 		responseWriter.Header().Set("Content-Type", "application/json")
