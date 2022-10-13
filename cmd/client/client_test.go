@@ -14,21 +14,22 @@ import (
 )
 
 func TestSendRequestToSort(t *testing.T) {
-	expectedResult := map[string]interface{}{
-		"operation-error":  false,
-		"operation-result": []sorting.Tuple{{3, 2, 1}, {2, 3, 4}, {6, 3, 5}, {1, 4, 6}},
-		"operation-status": "Operation Done Successfully",
+	type Res struct {
+		OperationStatus string          `json:"operation-status"`
+		OperationResult []sorting.Tuple `json:"operation-result"`
+		OperationError  bool            `json:"operation-error"`
+	}
+	expectedResult := Res{
+		OperationError:  false,
+		OperationResult: []sorting.Tuple{{3, 2, 1}, {2, 3, 4}, {6, 3, 5}, {1, 4, 6}},
+		OperationStatus: "Operation Done Successfully",
 	}
 	server := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
 		// srv.HandleRequestToSort(...)
 		// Here I was trying to use handleRequestToSort function that exist in server.go
 		// instead, I had to mimic its functionality.
 		responseWriter.Header().Set("Content-Type", "application/json")
-		data := struct {
-			OperationStatus string          `json:"operation-status"`
-			OperationResult []sorting.Tuple `json:"operation-result"`
-			OperationError  bool            `json:"operation-error"`
-		}{
+		data := Res{
 			OperationStatus: "Operation Done Successfully",
 			OperationResult: []sorting.Tuple{{3, 2, 1}, {2, 3, 4}, {6, 3, 5}, {1, 4, 6}},
 			OperationError:  false,
@@ -47,16 +48,16 @@ func TestSendRequestToSort(t *testing.T) {
 	}
 	// Please Check Code Here
 	fmt.Println(reflect.TypeOf(response) == reflect.TypeOf(expectedResult))
-	fmt.Println(reflect.TypeOf(response["operation-error"]) == reflect.TypeOf(expectedResult["operation-error"]))
-	fmt.Println(reflect.TypeOf(response["operation-status"]) == reflect.TypeOf(expectedResult["operation-status"]))
-	fmt.Println(reflect.TypeOf(response["operation-result"]) == reflect.TypeOf(expectedResult["operation-result"]))
+	fmt.Println(reflect.TypeOf(response["operation-error"]) == reflect.TypeOf(expectedResult.OperationError))
+	fmt.Println(reflect.TypeOf(response["operation-status"]) == reflect.TypeOf(expectedResult.OperationStatus))
+	fmt.Println(reflect.TypeOf(response["operation-result"]) == reflect.TypeOf(expectedResult.OperationResult))
 	fmt.Println(reflect.TypeOf(response["operation-result"]))
-	fmt.Println(reflect.TypeOf(expectedResult["operation-result"]))
-	// Here, the condition fails because json file is returning a slice of interface instead of tuples.
-	if !reflect.DeepEqual(response, expectedResult) {
-		t.Errorf("expected: %v, got: %v", expectedResult, response)
-		t.Errorf("expected type: %T, got type: %T", expectedResult, response)
-		t.Errorf("expected length: %d, got length: %d", len(expectedResult), len(response))
 
+	responseBytes, _ := json.Marshal(response)
+	var typedResponse Res
+	json.Unmarshal(responseBytes, &typedResponse)
+	// Here, the condition fails because json file is returning a slice of interface instead of tuples.
+	if !reflect.DeepEqual(typedResponse, expectedResult) {
+		t.Errorf("expected: %v, got: %v", expectedResult, typedResponse)
 	}
 }
