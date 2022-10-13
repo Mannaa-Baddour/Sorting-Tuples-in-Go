@@ -25,6 +25,11 @@ To build server using makefile
 make build-server
 ```
 
+To test server using makefile
+```bash
+make test-server
+```
+
 To run client using makefile
 ```bash
 make run-client

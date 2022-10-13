@@ -21,6 +21,11 @@ build-server:
 	@echo "-- Building target: server"
 	go build -o bin/server cmd/server/server.go
 
+# Test server
+test-server:
+	@echo "-- Testing target: server"
+	go test -v --cover github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/cmd/server
+
 # Run client
 run-client:
 	@echo "-- Running client to request from server with specified parameters"
