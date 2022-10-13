@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"sync"
 
 	"github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/internal/server"
 	"github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/sorting"
@@ -17,7 +18,13 @@ func main() {
 	flag.Parse()
 	address := fmt.Sprintf("%s:%s", *url, *port)
 	http.HandleFunc("/", server.HandleRequestToSort)
-	err := http.ListenAndServe(address, nil)
-	sorting.HandleErrors(err, nil, true)
+	waitGroupVar := sync.WaitGroup{}
+	waitGroupVar.Add(1)
+	go func() {
+		err := http.ListenAndServe(address, nil)
+		sorting.HandleErrors(err, nil, true)
+		waitGroupVar.Done()
+	}()
 	fmt.Println("Server started at address:", address)
+	waitGroupVar.Wait()
 }

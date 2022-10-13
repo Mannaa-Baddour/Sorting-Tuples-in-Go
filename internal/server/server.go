@@ -45,15 +45,26 @@ func HandleRequestToSort(responseWriter http.ResponseWriter, request *http.Reque
 	}
 
 	if !operationError {
-		list := sorting.ReadingTuplesFromFile(params["input-file"].(string))
-		list = sorting.SortList(list, params["column"].(int))
-		sorting.SaveResultToFile(params["output-file"].(string), list)
-		if list != nil {
+		list, err := sorting.ReadingTuplesFromFile(params["input-file"].(string))
+		if err != nil {
+			operationStatus = "Operation Could not be Completed, due to Errors Regarding the Input File"
+			operationError = true
+		} else {
+			list, err = sorting.SortList(list, params["column"].(int))
+			if err != nil {
+				operationStatus = "Operation Could not be Completed, due to Errors Regarding the Sorting Part"
+				operationError = true
+			} else {
+				err = sorting.SaveResultToFile(params["output-file"].(string), list)
+				if err != nil {
+					operationStatus = "Operation Could not be Completed, due to Errors Regarding the Output File"
+					operationError = true
+				}
+			}
+		}
+		if list != nil && err == nil {
 			operationStatus = "Operation Done Successfully"
 			operationResult = list
-		} else {
-			operationStatus = "Operation Could not be Completed, due to Errors in Sorting Part"
-			operationError = true
 		}
 	}
 	responseWriter.Header().Set("Content-Type", "application/json")

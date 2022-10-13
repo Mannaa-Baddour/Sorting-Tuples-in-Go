@@ -39,6 +39,16 @@ var handleRequestToSortTestcases = []HandleRequestToSortTestcase{
 		testRequest: httptest.NewRequest(http.MethodGet,
 			"/?input-file=test.txt&output-file=testResult.txt&column=a", nil),
 	},
+	{
+		name: "Testcase3: non-existing input file",
+		expectedResult: server.ResponseData{
+			OperationStatus: "Operation Could not be Completed, due to Errors Regarding the Input File",
+			OperationResult: nil,
+			OperationError:  true,
+		},
+		testRequest: httptest.NewRequest(http.MethodGet,
+			"/?input-file=test2.txt&output-file=testResult.txt&column=2", nil),
+	},
 }
 
 func TestHandleRequestToSort(t *testing.T) {

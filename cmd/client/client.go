@@ -7,15 +7,18 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+
+	// "reflect"
 	"time"
 
+	srv "github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/internal/server"
 	"github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/sorting"
 )
 
 // sendRequestToSort is a function that takes a client argument, along with server and port to connect to a remote
 // server, and parameters required to perform sorting operations on that server.
-// Returns a map from the decoding of the json response.
-func sendRequestToSort(client http.Client, server, port, infile, outfile, sortColumn string) (map[string]interface{}, error) {
+// Returns a struct from the decoding of the json response, and error when things go wrong.
+func sendRequestToSort(client http.Client, server, port, infile, outfile, sortColumn string) (srv.ResponseData, error) {
 	// Setting up query parameters and server address.
 	inputFile := url.QueryEscape(infile)
 	outputFile := url.QueryEscape(outfile)
@@ -35,15 +38,16 @@ func sendRequestToSort(client http.Client, server, port, infile, outfile, sortCo
 		log.Println(err)
 		response.Body.Close()
 		//os.Exit(1)
-		return nil, err
+		return srv.ResponseData{}, err
 	}
 	defer response.Body.Close()
 
-	// Getting the response and decoding its json form into a map.
-	var data map[string]interface{}
+	// Getting the response and decoding its json form into a server.ResponseData struct.
+	var data srv.ResponseData
+	fmt.Println("Decoding")
 	err = json.NewDecoder(response.Body).Decode(&data)
 	sorting.HandleErrors(err, nil, false)
-
+	fmt.Println(data)
 	return data, nil
 }
 
