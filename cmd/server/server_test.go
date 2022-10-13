@@ -8,19 +8,20 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/internal/server"
 	"github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/sorting"
 )
 
 type HandleRequestToSortTestcase struct {
 	name           string
-	expectedResult ResponseData
+	expectedResult server.ResponseData
 	testRequest    *http.Request
 }
 
 var handleRequestToSortTestcases = []HandleRequestToSortTestcase{
 	{
 		name: "Testcase1: proper request and query values",
-		expectedResult: ResponseData{
+		expectedResult: server.ResponseData{
 			OperationStatus: "Operation Done Successfully",
 			OperationResult: []sorting.Tuple{{3, 2, 1}, {2, 3, 4}, {6, 3, 5}, {1, 4, 6}},
 			OperationError:  false,
@@ -30,7 +31,7 @@ var handleRequestToSortTestcases = []HandleRequestToSortTestcase{
 	},
 	{
 		name: "Testcase2: non-integer column value",
-		expectedResult: ResponseData{
+		expectedResult: server.ResponseData{
 			OperationStatus: "Operation Failed due to Failing in Converting Ascii (column value) to Integer",
 			OperationResult: nil,
 			OperationError:  true,
@@ -44,9 +45,9 @@ func TestHandleRequestToSort(t *testing.T) {
 	for _, testcase := range handleRequestToSortTestcases {
 		t.Run(testcase.name, func(t *testing.T) {
 			responseWriter := httptest.NewRecorder()
-			handleRequestToSort(responseWriter, testcase.testRequest)
+			server.HandleRequestToSort(responseWriter, testcase.testRequest)
 			response := responseWriter.Result()
-			var data ResponseData
+			var data server.ResponseData
 			err := json.NewDecoder(response.Body).Decode(&data)
 			fmt.Println(data)
 			if err != nil {
