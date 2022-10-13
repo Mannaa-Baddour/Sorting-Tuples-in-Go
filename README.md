@@ -40,6 +40,11 @@ To build client using makefile
 make build-client
 ```
 
+To test client using makefile
+```bash
+make test-client
+```
+
 To build all
 ```
 make build

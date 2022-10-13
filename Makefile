@@ -37,6 +37,11 @@ build-client:
 	@echo "-- Building target: client"
 	go build -o bin/client cmd/client/client.go
 
+# Test client
+test-client:
+	@echo "-- Testing target: client"
+	go test -v --cover github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/cmd/client
+
 # Clean build
 clean:
 	rm -r bin
