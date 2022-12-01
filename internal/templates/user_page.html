@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Workspace</title>
+</head>
+<body>
+    <h1>User {{.AccountID}}</h1>
+    <ul>
+        <li><a href="/users/folders/files/?user_id=0&file_type=input&account_id={{.AccountID}}">public</a></li>
+        {{if .InputExists}}
+            <li><a href="/users/folders/files/?user_id={{.AccountID}}&file_type=input&account_id={{.AccountID}}">input</a></li>
+        {{end}}
+        {{if .OutputExists}}
+            <li><a href="/users/folders/files/?user_id={{.AccountID}}&file_type=output&account_id={{.AccountID}}">output</a></li>
+        {{end}}
+    </ul>
+    <div>
+        {{if .Notification}}
+            <p style="color: green">{{.Notification}}</p>
+        {{end}}
+        <p>New Input File</p>
+        <form method="POST">
+            <label for="fileName">Input File Name: </label><input id="fileName" type="text" name="inputFile" value="" required>
+            <label for="dataField">Input File Content: </label>
+            <textarea id="dataField" name="data" cols="10" rows="30" required></textarea>
+            <input type="submit" value="Create">
+        </form>
+    </div>
+    <button><a href="/users/settings/?user_id={{.AccountID}}" style="text-decoration: none; color: black">Settings</a></button>
+</body>
+</html>

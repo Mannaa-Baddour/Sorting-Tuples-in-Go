@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Files</title>
+</head>
+<body>
+    <h2>{{(index .Files 0).Type}} Files:</h2>
+    <div>
+        <ul>
+            {{$user_id := .AccountID}}
+            {{range .Files}}
+                <li><a href="/users/folders/files/file/?user_id={{.UserID}}&file_id={{.ID}}&account_id={{$user_id}}">{{.Name}}</a></li>
+            {{end}}
+        </ul>
+    </div>
+</body>
+</html>

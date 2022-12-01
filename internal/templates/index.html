@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Login</title>
+</head>
+<body>
+    <h1>Welcome Page</h1>
+    {{if .ErrorMessage}}
+        <p style="color: red">{{.ErrorMessage}}</p>
+    {{end}}
+    <form method="POST">
+        <label for="usernameInput">Username: </label><input id="usernameInput" type="text" name="username" value="" required>
+        <label for="passwordInput">Password: </label><input id="passwordInput" type="password" name="password" value="" required>
+        <input type="submit" value="Login">
+    </form>
+    <p>Not registered? <a href="/users/signup">signup</a> now.</p>
+</body>
+</html>

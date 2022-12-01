@@ -1,6 +1,10 @@
 package sorting
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/Mannaa-Baddour/Sorting-Tuples-in-Go/internal/logging"
+)
 
 // MaxHeap is a defined struct to hold the list of tuples passed to it and associate required methods to sort it
 // based on a specified column.
@@ -26,9 +30,9 @@ func NewHeap(list []Tuple, column int) *MaxHeap {
 // of the heap, by swapping the root of the subtree with its left or right child if its value was smaller than them,
 // which creates a sorted max-heap of tuples according to the column of comparison.
 func (heap *MaxHeap) heapify(heapSize, subtreeRootIndex int) {
-	var largest int = subtreeRootIndex
-	var leftChild int = 2*subtreeRootIndex + 1
-	var rightChild int = 2*subtreeRootIndex + 2
+	largest := subtreeRootIndex
+	leftChild := 2*subtreeRootIndex + 1
+	rightChild := 2*subtreeRootIndex + 2
 
 	if leftChild < heapSize && heap.list[largest][heap.column] < heap.list[leftChild][heap.column] {
 		largest = leftChild
@@ -47,7 +51,7 @@ func (heap *MaxHeap) heapify(heapSize, subtreeRootIndex int) {
 // with the last element (the smallest value), then reducing the size of the heap by one, until all elements are sorted
 // in an increasing order.
 func (heap *MaxHeap) heapSort() {
-	var heapSize int = len(heap.list)
+	heapSize := len(heap.list)
 	for subtreeRootIndex := (heapSize / 2) - 1; subtreeRootIndex >= 0; subtreeRootIndex-- {
 		heap.heapify(heapSize, subtreeRootIndex)
 	}
@@ -62,7 +66,8 @@ func (heap *MaxHeap) getSortedList() ([]Tuple, error) {
 	if heap.sorted {
 		return heap.list, nil
 	} else {
-		var err error = errors.New("the passed list is not sorted yet")
+		err := errors.New("the passed list is not sorted yet")
+		logging.LogError(err, "sorting/getSortedList")
 		return nil, err
 	}
 }

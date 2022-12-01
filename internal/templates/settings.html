@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+<!--    <script>-->
+<!--        let method = document.getElementById("method")-->
+<!--        let form = document.getElementById("form")-->
+<!--        function displayForm() {-->
+<!--            // form.toggleAttribute("hidden")-->
+<!--            if (method.getAttribute("value") === "") {-->
+<!--                method.setAttribute("value", "PUT")-->
+<!--                form.style.display = "block"-->
+<!--            }-->
+<!--            else {-->
+<!--                method.setAttribute("value", "")-->
+<!--                form.style.display = "none"-->
+<!--            }-->
+<!--        }-->
+<!--        function deleteUser() {-->
+<!--            method.setAttribute("value", "DELETE")-->
+<!--            form.submit()-->
+<!--        }-->
+<!--        if ("{{.ErrorMessage}}") {-->
+<!--            displayForm()-->
+<!--        }-->
+<!--    </script>-->
+</head>
+<body>
+    <div>
+        <h2>{{.User.Username}}</h2>
+        <h3>{{.User.Email}}</h3>
+        <div style="justify-content: space-around">
+            <button><a href="/" style="text-decoration: none; color: black">Logout</a></button>
+            <button id="change" onclick="displayForm()">Change Data</button>
+            <button id="delete" onclick="deleteUser()">Delete Account</button>
+        </div>
+    </div>
+    {{if .ErrorMessage}}
+        <p id="error" style="color: red">{{.ErrorMessage}}</p>
+    {{end}}
+    <form id="form" method="POST" style="display: none">
+        <input id="method" type="hidden" name="_method" value="">
+        <input id="user_id" type="hidden" name="user_id" value="{{.User.ID}}">
+        <label for="username">Username: </label><input id="username" type="text" name="username" value="{{.User.Username}}">
+        <label for="email">Email: </label><input id="email" type="email" name="email" value="{{.User.Email}}">
+        <label for="oldPassword">Old Password: </label><input id="oldPassword" type="password" name="oldPassword" value="">
+        <label for="newPassword">New Password: </label><input id="newPassword" type="password" name="newPassword" value="">
+        <input type="submit" value="Submit Changes"><button type="button" onclick="displayForm()">Cancel</button>
+    </form>
+
+    <script>
+        let method = document.getElementById("method")
+        let form = document.getElementById("form")
+        let error_p = document.getElementById("error")
+        function displayForm() {
+            // form.toggleAttribute("hidden")
+            if (method.getAttribute("value") === "") {
+                method.setAttribute("value", "PUT")
+                form.style.display = "block"
+            }
+            else {
+                method.setAttribute("value", "")
+                form.style.display = "none"
+                error_p.innerText = ""
+            }
+        }
+        function deleteUser() {
+            method.setAttribute("value", "DELETE")
+            form.submit()
+        }
+        if ("{{.ErrorMessage}}") {
+            displayForm()
+        }
+    </script>
+</body>
+</html>

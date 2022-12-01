@@ -1,0 +1,253 @@
+openapi: 3.0.3
+info:
+  title: Sorting Tuples in Go
+  description: "API that allows users to signup/login to the server, giving them the\
+    \ ability to create input files of type csv, and sort the column data in them\
+    \ based on a certain column."
+  contact:
+    name: Mannaa Baddour
+    email: mannaabaddour29699@gmail.com
+  version: 0.1.0
+servers:
+- url: localhost:30010
+paths:
+  /users/login:
+    post:
+      description: posts user credentials to server to check if the user exists in
+        the database to log them in.
+      requestBody:
+        description: contains user's credentials (username and password).
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login'
+        required: true
+      responses:
+        "302":
+          description: user logged in sucessfully and got redirected to their page.
+        "500":
+          description: error occurred in one of the server's functionalities.
+  /users/signup:
+    post:
+      description: posts new user's info to server to create a new account for them
+        in the database.
+      requestBody:
+        description: "contains new user's info (username, email, password, confirm_password)."
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/signup'
+        required: true
+      responses:
+        "302":
+          description: user signed up successfully and got redirected to login page.
+        "500":
+          description: error occurred in one of the server's functionalities.
+  /users/folders:
+    get:
+      description: "displays a list of public folder, user's input and output folders.\
+        \ each folder contains csv files, public folder holds server csv input files,\
+        \ and user's input and output hold user's csv input and output files respectively."
+      responses:
+        "200":
+          description: user's homepage has loaded successfully.
+        "400":
+          description: invalid request.
+        "404":
+          description: user account doesn't exist.
+        "500":
+          description: error occurred in one of the server's functionalities.
+    post:
+      description: creates a new user's input file.
+      requestBody:
+        description: contains file name and file data (comma separated values).
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/input_file'
+      responses:
+        "200":
+          description: input file was created successfully.
+        "500":
+          description: error occurred in one of the server's functionalities.
+  /users/settings:
+    get:
+      description: "fetches user's insensitive info (username, email) from the database\
+        \ and displays them."
+      responses:
+        "200":
+          description: user's info retrieved successfully.
+        "400":
+          description: invalid request.
+        "404":
+          description: user account doesn't exist.
+        "500":
+          description: error occurred in one of the server's functionalities.
+    put:
+      description: "modifies user's info (username, email, password) and updates the\
+        \ fields in the database."
+      requestBody:
+        description: "contains either all or some updated user info (username, email,\
+          \ password)."
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/settings'
+      responses:
+        "200":
+          description: user's info updated sucessfully.
+        "500":
+          description: error occurred in one of the server's functionalities.
+    delete:
+      description: deletes user from the database and removes their account and data.
+      responses:
+        "302":
+          description: user's account was deleted successfully and got redirected
+            to login page.
+        "500":
+          description: error occurred in one of the server's functionalities.
+  /users/folders/files:
+    get:
+      description: fetches the names of the files belonging to the chosen folder and
+        displays them in a list.
+      responses:
+        "200":
+          description: files' names were retrieved successfully.
+        "400":
+          description: invalid request.
+        "404":
+          description: requested data doesn't exist.
+        "500":
+          description: error occurred in one of the server's functionalities.
+  /users/folders/files/file:
+    get:
+      description: fetches file's info from the database and displays them along with
+        its data.
+      responses:
+        "200":
+          description: file retrieved successfully.
+        "400":
+          description: invalid request.
+        "404":
+          description: file doesn't exist.
+        "500":
+          description: error occurred in one of the server's functionalities.
+    put:
+      description: "modifies user's input file (file name, data) and updates the fields\
+        \ in the database along with the file's data on the disk."
+      requestBody:
+        description: contains both file name and data or one of them.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/input_file'
+      responses:
+        "200":
+          description: user's input file updated sucessfully.
+        "500":
+          description: error occurred in one of the server's functionalities.
+    post:
+      description: sorts the displayed input file and saves result in a newly created
+        output file.
+      requestBody:
+        description: "contains user's output file name, and the column to sort the\
+          \ currently displayed input file by."
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/output_file'
+      responses:
+        "200":
+          description: input file sorted successfully.
+        "500":
+          description: error occurred in one of the server's functionalities.
+    delete:
+      description: deletes user's file (either input or output) from the database
+        and removes its data.
+      responses:
+        "302":
+          description: user's file was deleted successfully and got redirected to
+            their homepage.
+        "500":
+          description: error occurred in one of the server's functionalities.
+components:
+  schemas:
+    login:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      example:
+        username: username
+        password: password
+    signup:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        confirm_password:
+          type: string
+      example:
+        username: username
+        email: user@user.com
+        password: password
+        confirm_password: password
+    settings:
+      type: object
+      properties:
+        new_username:
+          type: string
+        new_email:
+          type: string
+        old_password:
+          type: string
+        new_password:
+          type: string
+      example:
+        username: newusername
+        email: newuser@user.com
+        old_password: password
+        new_password: newpassword
+    input_file:
+      type: object
+      properties:
+        input_filename:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/input_file_data'
+      example:
+        input_filename: file1
+        data:
+        - column_0: 2
+          column_1: 1
+          column_2: 4
+        - column_0: 3
+          column_1: 7
+          column_2: 0
+    output_file:
+      type: object
+      properties:
+        output_filename:
+          type: string
+        sorting_column:
+          type: integer
+      example:
+        output_filename: output_file1
+        sorting_column: 1
+    input_file_data:
+      type: object
+      properties:
+        column_0:
+          type: integer
+        column_1:
+          type: integer
+        column_2:
+          type: integer
