@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.File.Name}}</title>
+</head>
+<body>
+    <div>
+        <button><a href="/users/folders/files/?user_id={{.File.UserID}}&file_type={{.File.Type}}&account_id={{.AccountID}}" style="text-decoration: none; color: black">Previous</a></button>
+        <button><a href="/users/folders/?user_id={{.AccountID}}" style="text-decoration: none; color: black">Home</a></button>
+    </div>
+    {{if .Notification}}
+        <p style={{.NotificationColor}}>{{.Notification}}</p>
+    {{end}}
+    <form id="topForm" method="POST">
+        <input id="method" type="hidden" name="_method" value="">
+        <input id="user_id" type="hidden" name="user_id" value="{{.File.UserID}}">
+        <input id="file_id" type="hidden" name="file_id" value="{{.File.ID}}">
+<!--        <input id="account_id" type="hidden" name="account_id" value="{{.AccountID}}">-->
+        <label id="nameLabel" for="name" hidden>File Name: </label><input id="name" type="text" name="fileName" value="{{.File.Name}}" hidden>
+        <textarea id="data" name="data" cols="10" rows="30" readonly></textarea>
+        <!--        {{range .File.Data}}-->
+        <!--            {{$line := print .Column0 "," .Column1 "," .Column2}}{{$line}}-->
+        <!--        {{end}}-->
+    </form>
+    {{if ne .File.UserID 0}}
+    <div style="justify-content: space-around ">
+        {{if ne .File.Type "output"}}
+            <button type="button" id="modify" onclick="setToModify()">Modify</button>
+            <button id="save" disabled onclick="putMethod()">Save</button>
+        {{end}}
+        <button id="delete" onclick="deleteMethod()">Delete</button>
+    </div>
+    {{end}}
+    {{if eq .File.Type "input"}}
+<!--    action="/users/folders/files/file/sort/?user_id={{.File.UserID}}&file_id={{.File.ID}}&account_id={{.AccountID}}"-->
+        <form method="POST" >
+            <label for="outputFileInput">Output File Name: </label><input id="outputFileInput" type="text" name="outputFile" value="" required>
+            <label for="sortingColumnInput">Sort Column (0, 1, or 2): </label><input id="sortingColumnInput" type="text" name="sortingColumn" value="" required>
+            <input type="submit" value="Sort File">
+        </form>
+    {{end}}
+
+    <script>
+        let textArea = document.getElementById("data")
+        let text = ""
+        let data = {{.File.Data}}
+        if (data){
+            for (let line of data) {
+                if (line.column_0 === "") {
+                    break
+                }
+                text += line.column_0 + ", " + line.column_1 + ", " + line.column_2 + "\n"
+            }
+        }
+        textArea.value = text
+        let method = document.getElementById("method")
+        let modify = document.getElementById("modify")
+        let save = document.getElementById("save")
+        let form = document.getElementById("topForm")
+        let name = document.getElementById("name")
+        let nameLabel = document.getElementById("nameLabel")
+        function setToModify() {
+            textArea.toggleAttribute("readonly")
+            save.toggleAttribute("disabled")
+            name.toggleAttribute("hidden")
+            nameLabel.toggleAttribute("hidden")
+            if (modify.innerText === "Modify") {
+                modify.innerText = "Cancel"
+            }
+            else {
+                modify.innerText = "Modify"
+            }
+        }
+        function putMethod() {
+            method.setAttribute("value", "PUT")
+            form.submit()
+        }
+        function deleteMethod() {
+            method.setAttribute("value", "DELETE")
+            form.submit()
+        }
+    </script>
+</body>
+</html>

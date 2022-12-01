@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Signup</title>
+</head>
+<body>
+    {{if .ErrorMessage}}
+        <p style="color: red">{{.ErrorMessage}}</p>
+    {{end}}
+    <form method="POST">
+        <label for="usernameInput">Username: </label><input id="usernameInput" type="text" name="username" value="" required>
+        <label for="emailInput">Email: </label><input id="emailInput" type="email" name="email" value="" required>
+        <label for="passwordInput">Password: </label><input id="passwordInput" type="password" name="password" value="" required>
+        <label for="confirmInput">Confirm Password: </label><input id="confirmInput" type="password" name="confirmPassword" value="" required>
+        <input type="submit" value="Create Account">
+    </form>
+</body>
+</html>
